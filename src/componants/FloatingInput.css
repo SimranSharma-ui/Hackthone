@@ -1,0 +1,38 @@
+.floating-input {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.floating-input input {
+  width: 100%;
+  padding: 1rem 0.75rem 0.25rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.floating-input input:focus {
+  border-color: #6366f1; /* Tailwind indigo-500 */
+}
+
+.floating-input label {
+  position: absolute;
+  top: 1rem;
+  left: 0.75rem;
+  color: #9ca3af; /* Tailwind gray-400 */
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+.floating-input input:focus + label,
+.floating-input input:not(:placeholder-shown) + label {
+  top: 0.25rem;
+  left: 0.75rem;
+  font-size: 0.75rem;
+  color: #6366f1;
+  background-color: white;
+  padding: 0 0.25rem;
+}
