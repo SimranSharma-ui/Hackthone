@@ -1,6 +1,6 @@
 // API service for medical report analysis
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api-medilens.thesynergyworks.com/api';
 
 // Authentication APIs
 export const signUp = async (userData) => {
@@ -31,6 +31,7 @@ export const login = async (credentials) => {
 
   if (!response.ok) {
     const error = await response.json();
+    console.log("Error response:", error);
     throw new Error(error.message || 'Failed to login');
   }
 
@@ -39,13 +40,13 @@ export const login = async (credentials) => {
 
 export const uploadReport = async (file, reportType, reportDate) => {
   const formData = new FormData();
-  formData.append('report', file);
+  formData.append('file', file);
   formData.append('report_type', reportType);
   if (reportDate) {
     formData.append('report_date', reportDate);
   }
 
-  const response = await fetch(`${API_BASE_URL}/reports/upload`, {
+  const response = await fetch(`${API_BASE_URL}/medical-reports/upload`, {
     method: 'POST',
     body: formData,
     headers: {
@@ -62,7 +63,7 @@ export const uploadReport = async (file, reportType, reportDate) => {
 };
 
 export const getReportDetails = async (reportId) => {
-  const response = await fetch(`${API_BASE_URL}/reports/${reportId}`, {
+  const response = await fetch(`${API_BASE_URL}/medical-reports/${reportId}`, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
@@ -81,7 +82,7 @@ export const getAllReports = async (params = {}) => {
   if (params.limit) queryParams.append('limit', params.limit);
   if (params.report_type) queryParams.append('report_type', params.report_type);
 
-  const response = await fetch(`${API_BASE_URL}/reports?${queryParams}`, {
+  const response = await fetch(`${API_BASE_URL}/medical-reports?${queryParams}`, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
@@ -95,7 +96,7 @@ export const getAllReports = async (params = {}) => {
 };
 
 export const compareWithPrevious = async (reportId) => {
-  const response = await fetch(`${API_BASE_URL}/reports/${reportId}/compare`, {
+  const response = await fetch(`${API_BASE_URL}/medical-reports/${reportId}/compare`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -113,7 +114,7 @@ export const compareWithPrevious = async (reportId) => {
 export const compareReports = compareWithPrevious;
 
 export const getHealthTrends = async (metricName, months = 6) => {
-  const response = await fetch(`${API_BASE_URL}/reports/trends?metric_name=${metricName}&months=${months}`, {
+  const response = await fetch(`${API_BASE_URL}/medical-reports/trends/data?metric_name=${metricName}`, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
@@ -127,7 +128,7 @@ export const getHealthTrends = async (metricName, months = 6) => {
 };
 
 export const deleteReport = async (reportId) => {
-  const response = await fetch(`${API_BASE_URL}/reports/${reportId}`, {
+  const response = await fetch(`${API_BASE_URL}/medical-reports/${reportId}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -142,7 +143,7 @@ export const deleteReport = async (reportId) => {
 };
 
 export const getReportTypes = async () => {
-  const response = await fetch(`${API_BASE_URL}/reports/types`, {
+  const response = await fetch(`${API_BASE_URL}/medical-reports/types`, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
@@ -155,6 +156,16 @@ export const getReportTypes = async () => {
   return response.json();
 };
 
-export const SignUp = async () => {
+export const getTrends = async () => {
+  const response = await fetch(`${API_BASE_URL}/medical-reports/trends/all`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    }
+  });
 
-}
+  if (!response.ok) {
+    throw new Error('Failed to fetch health tips');
+  }
+
+  return response.json();
+};

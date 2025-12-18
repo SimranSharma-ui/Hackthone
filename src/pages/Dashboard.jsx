@@ -39,39 +39,40 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const data = await getAllReports();
-      setReports(data.reports || []);
+      console.log("Fetched reports:", data.message.reports);
+      setReports(data.message.reports || []);
     } catch (err) {
-      toast.info(
-        "Showing sample reports. Connect to backend for your actual data."
-      );
+      // toast.info(
+      //   "Showing sample reports. Connect to backend for your actual data."
+      // );
 
-      // Use mock data if API fails
-      setReports([
-        {
-          id: 1,
-          name: "CBC Report",
-          date: "2024-12-10",
-          type: "cbc",
-          status: "analyzed",
-          summary: "All values within normal range",
-        },
-        {
-          id: 2,
-          name: "Lipid Profile",
-          date: "2024-11-15",
-          type: "lipid",
-          status: "analyzed",
-          summary: "Cholesterol slightly elevated",
-        },
-        {
-          id: 3,
-          name: "Blood Sugar Test",
-          date: "2024-10-20",
-          type: "blood_sugar",
-          status: "analyzed",
-          summary: "Normal glucose levels",
-        },
-      ]);
+      // setReports([
+      //   {
+      //     id: 1,
+      //     name: "CBC Report",
+      //     date: "2024-12-10",
+      //     type: "cbc",
+      //     status: "analyzed",
+      //     summary: "All values within normal range",
+      //   },
+      //   {
+      //     id: 2,
+      //     name: "Lipid Profile",
+      //     date: "2024-11-15",
+      //     type: "lipid",
+      //     status: "analyzed",
+      //     summary: "Cholesterol slightly elevated",
+      //   },
+      //   {
+      //     id: 3,
+      //     name: "Blood Sugar Test",
+      //     date: "2024-10-20",
+      //     type: "blood_sugar",
+      //     status: "analyzed",
+      //     summary: "Normal glucose levels",
+      //   },
+      // ]);
+      // toast.error(err.message || "Failed to fetch reports");
     } finally {
       setLoading(false);
     }
@@ -125,13 +126,25 @@ const Dashboard = () => {
     },
   ];
 
+  const formatDateTime = (date) => {
+    if (!date) return "—";
+    return new Date(date).toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Welcome Section */}
         <div className="mb-8 bg-white rounded-xl p-6 border-l-4 border-teal-500 shadow-sm">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Hello, {user?.name || "Aanmaya Sharma"}
+            Hello, {user?.data?.first_name || "Aanmaya Sharma"}{" "}
+            {user?.data?.last_name || ""}
           </h1>
           <p className="text-gray-600 text-sm">
             Medical Report Analysis & Health Monitoring
@@ -156,7 +169,7 @@ const Dashboard = () => {
           <Card
             hover
             onClick={() => navigate("/upload")}
-            className="bg-teal-500 text-white border-2 border-teal-600"
+            className="bg-teal-400 text-white border-2 border-teal-600"
           >
             <div className="w-12 h-12 bg-white text-black bg-opacity-20 rounded-lg flex items-center justify-center text-2xl mb-3">
               <FaUpload />
@@ -218,7 +231,7 @@ const Dashboard = () => {
               </p>
               <button
                 onClick={() => navigate("/upload")}
-                className="bg-teal-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-600 shadow-md flex items-center gap-2 mx-auto"
+                className="bg-teal-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-600 shadow-md flex items-center gap-2 mx-auto"
               >
                 <FaUpload /> Upload First Report
               </button>
@@ -235,24 +248,27 @@ const Dashboard = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-xl">
-                          {getReportIcon(report.type)}
+                          {getReportIcon(report.report_type || report.type)}
                         </span>
                         <h3 className="text-base font-semibold text-gray-900">
-                          {report.name}
+                          {report.report_type || report.name}
                         </h3>
                         <span className="px-2 py-1 bg-green-100 text-green-700 rounded-md text-xs font-medium">
                           {report.status}
                         </span>
                       </div>
-                      <p className="text-gray-600 text-sm mb-2 ml-8">
-                        {report.summary}
+                      <p className="text-gray-600 text-sm mb-2 ml-8 whitespace-pre-line">
+                        {report.ai_summary || report.summary}
                       </p>
+
                       <div className="flex items-center gap-4 text-xs text-gray-500 ml-8">
                         <span className="flex items-center gap-1">
-                          <FaClipboardList /> {getReportTypeName(report.type)}
+                          <FaClipboardList />{" "}
+                          {getReportTypeName(report.report_type || report.type)}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <FaCalendarAlt /> {report.date}
+                        <span className="flex items-center gap-1 text-sm text-gray-600">
+                          <FaCalendarAlt />
+                          {formatDateTime(report.report_date || report.date)}
                         </span>
                       </div>
                     </div>

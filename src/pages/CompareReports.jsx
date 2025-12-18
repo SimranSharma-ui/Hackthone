@@ -8,7 +8,7 @@ import Loader from "../Utils/Loader";
 import { VscGraph } from "react-icons/vsc";
 import { SlCalender } from "react-icons/sl";
 import { FaChartLine, FaClipboardList, FaMicroscope } from "react-icons/fa";
-import { MdBloodtype } from "react-icons/md";
+import { MdBloodtype, MdTrendingFlat, MdTrendingUp } from "react-icons/md";
 import { BsGraphDownArrow } from "react-icons/bs";
 import { GiClockwork } from "react-icons/gi";
 
@@ -124,34 +124,40 @@ const CompareReports = () => {
         comparisonResponse.message.previous_report.report_date
       );
 
-      const comparisonPayload = {
-        current_report: {
-          id: comparisonResponse.message.current_report.id,
-          name: "CBC Report",
-          date: new Date(
-            comparisonResponse.message.current_report.report_date
-          ).toLocaleDateString(),
-          type: comparisonResponse.message.current_report.report_type,
-        },
-        previous_report: {
-          id: comparisonResponse.message.previous_report.id,
-          name: "CBC Report",
-          date: new Date(
-            comparisonResponse.message.previous_report.report_date
-          ).toLocaleDateString(),
-          type: comparisonResponse.message.previous_report.report_type,
-        },
-        comparison: {
-          time_difference: getTimeDifference(currentDate, previousDate),
-          summary:
-            comparisonResponse.message.comparison.key_changes.join(". ") + ".",
-          overall_trend: comparisonResponse.message.comparison.overall_trend,
-          metrics: buildMetricComparison(
-            comparisonResponse.message.current_report.metrics,
-            comparisonResponse.message.previous_report.metrics
-          ),
-        },
-      };
+    const comparisonPayload = {
+  current_report: {
+    id: comparisonResponse.message.current_report.id,
+    name: "CBC Report",
+    date: new Date(
+      comparisonResponse.message.current_report.report_date
+    ).toLocaleDateString(),
+    type: comparisonResponse.message.current_report.report_type,
+  },
+
+  previous_report: {
+    id: comparisonResponse.message.previous_report.id,
+    name: "CBC Report",
+    date: new Date(
+      comparisonResponse.message.previous_report.report_date
+    ).toLocaleDateString(),
+    type: comparisonResponse.message.previous_report.report_type,
+  },
+
+  comparison: {
+    time_difference: comparisonResponse.message.comparison.time_difference,
+    summary: comparisonResponse.message.comparison.summary,
+    metrics: comparisonResponse.message.comparison.metrics.map((m) => ({
+      name: m.name,
+      previous_value: m.previous_value,
+      current_value: m.current_value,
+      change: m.change,
+      change_percentage: m.change_percentage,
+      trend: m.trend,
+      interpretation: m.interpretation,
+    })),
+  },
+};
+
 
       setComparisonData(comparisonPayload);
 
@@ -177,15 +183,18 @@ const CompareReports = () => {
     return key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
-  const getTrend = (prev, curr) => {
-    const p = parseFloat(prev);
-    const c = parseFloat(curr);
+const getTrend = (prev, curr) => {
+  const p = parseFloat(prev);
+  const c = parseFloat(curr);
 
-    if (isNaN(p) || isNaN(c)) return "stable";
-    if (c > p) return "improved";
-    if (c < p) return "worsened";
-    return "stable";
-  };
+  if (isNaN(p) || isNaN(c)) return "stable";
+
+  if (c > p) return "increased";
+  if (c < p) return "decreased";
+
+  return "stable";
+};
+
 
   const getChange = (prev, curr) => {
     const p = parseFloat(prev);
@@ -236,31 +245,46 @@ const CompareReports = () => {
     });
   };
 
-  const getTrendColor = (trend) => {
-    switch (trend) {
-      case "improved":
-        return "bg-green-50 border-green-300 text-green-700";
-      case "worsened":
-        return "bg-red-50 border-red-300 text-red-700";
-      case "stable":
-        return "bg-blue-50 border-blue-300 text-blue-700";
-      default:
-        return "bg-gray-50 border-gray-300 text-gray-700";
-    }
-  };
+const getTrendColor = (trend) => {
+  switch (trend) {
+    case "improved":
+      return "bg-green-50 border-green-300 text-green-700";
 
-  const getTrendIcon = (trend) => {
-    switch (trend) {
-      case "improved":
-        return <FaChartLine />;
-      case "worsened":
-        return <BsGraphDownArrow />;
-      case "stable":
-        return "➡️";
-      default:
-        return "➡️";
-    }
-  };
+    case "increased":
+      return "bg-yellow-50 border-yellow-300 text-yellow-700";
+
+    case "worsened":
+    case "decreased":
+      return "bg-red-50 border-red-300 text-red-700";
+
+    case "stable":
+      return "bg-blue-50 border-blue-300 text-blue-700";
+
+    default:
+      return "bg-gray-50 border-gray-300 text-gray-700";
+  }
+};
+
+
+const getTrendIcon = (trend) => {
+  switch (trend) {
+    case "improved":
+      return <FaChartLine className="text-green-600" />;
+
+    case "increased":
+      return <MdTrendingUp className="text-yellow-600" />;
+
+    case "worsened":
+    case "decreased":
+      return <BsGraphDownArrow className="text-red-600" />;
+
+    case "stable":
+      return <MdTrendingFlat className="text-blue-600" />;
+
+    default:
+      return <MdTrendingFlat />;
+  }
+};
 
   const getReportIcon = (type) => {
     switch (type) {
@@ -479,7 +503,7 @@ const CompareReports = () => {
           </button>
           <button
             onClick={() => navigate(`/report/${reportId}`)}
-            className="flex-1 bg-teal-500 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition shadow-md"
+            className="flex-1 bg-teal-400 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition shadow-md"
           >
             View Current Report
           </button>

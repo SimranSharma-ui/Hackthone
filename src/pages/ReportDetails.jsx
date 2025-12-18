@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getReportDetails } from "../services/api";
+import { getAllReports, getReportDetails } from "../services/api";
 import Card from "../Utils/Card";
 import MetricCard from "../Utils/MetricCard";
 import Loader from "../Utils/Loader";
@@ -21,25 +21,47 @@ import {
 import { SlCalender } from "react-icons/sl";
 import { FaUserDoctor } from "react-icons/fa6";
 import { BsHospital } from "react-icons/bs";
-import { HiMiniArrowDownRight, HiMiniArrowRight, HiMiniArrowUpRight } from "react-icons/hi2";
+import {
+  HiMiniArrowDownRight,
+  HiMiniArrowRight,
+  HiMiniArrowUpRight,
+} from "react-icons/hi2";
 
 const ReportDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("explanation");
   const [report, setReport] = useState(null);
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [allReports, setAllReports] = useState();
 
   useEffect(() => {
     fetchReportDetails();
+    fetchReports();
   }, [id]);
+
+  const fetchReports = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllReports();
+      console.log("Fetched reports:", data.message.reports.length);
+      setAllReports(data.message.reports.length || []);
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchReportDetails = async () => {
     try {
       setLoading(true);
       const data = await getReportDetails(id);
-      setReport(data.report || data);
+      console.log("Report details:", data.message);
+      setReport(data.message.report);
+      setRecommendations(data.message.recommendations || []);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -52,7 +74,7 @@ const ReportDetails = () => {
   };
 
   const handleDownload = () => {
-    if (!report?.file_url) {
+    if (!report.file_url) {
       toast.error("No file available for download.");
       return;
     }
@@ -60,8 +82,9 @@ const ReportDetails = () => {
     // Ensure full URL if backend URL is relative
     const fileUrl = report.file_url.startsWith("http")
       ? report.file_url
-      : `${import.meta.env.VITE_API_BASE_URL}${report.file_url}`;
+      : `https://api-medilens.thesynergyworks.com/api${report.file_url}`;
 
+    console.log("Downloading file from URL:", fileUrl);
     const link = document.createElement("a");
     link.href = fileUrl;
     link.download = report.name + ".pdf"; // optional: custom filename
@@ -78,7 +101,8 @@ const ReportDetails = () => {
       type: "cbc",
       doctor: "Dr. Sarah Johnson",
       facility: "City Medical Center",
-     file_url  : "/uploads/medical-reports/1765958845829-34db50c0-da93-44d7-9b55-da853bd6536b-Untitled_document__1_.pdf",
+      file_url:
+        "/uploads/medical-reports/1765958845829-34db50c0-da93-44d7-9b55-da853bd6536b-Untitled_document__1_.pdf",
       findings: [
         {
           parameter: "Hemoglobin",
@@ -139,6 +163,53 @@ const ReportDetails = () => {
         return <FaClipboardList className="text-gray-500" />;
     }
   };
+  const parseCBCReport = (text = "") => {
+    if (!text) return [];
+
+    const lines = text
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    const results = [];
+    let current = null;
+
+    lines.forEach((line) => {
+      const headerMatch = line.match(
+        /^\d+\.\s.*?\s([A-Z\s]+):\s(.+?)\s\((NORMAL|LOW|HIGH)\)/i
+      );
+
+      if (headerMatch) {
+        if (current) results.push(current);
+
+        current = {
+          name: headerMatch[1],
+          value: headerMatch[2],
+          status: headerMatch[3],
+          description: "",
+          interpretation: "",
+        };
+        return;
+      }
+
+      if (line.startsWith("What it is:") && current) {
+        current.description = line.replace("What it is:", "").trim();
+      }
+
+      if (line.startsWith("What your result means:") && current) {
+        current.interpretation = line
+          .replace("What your result means:", "")
+          .trim();
+      }
+    });
+
+    if (current) results.push(current);
+    return results;
+  };
+
+  const cbcData = useMemo(() => {
+    return parseCBCReport(report?.ai_explanation);
+  }, [report?.ai_explanation]);
 
   if (loading) {
     return <Loader text="Loading reports..." />;
@@ -173,19 +244,19 @@ const ReportDetails = () => {
             ← Back to Dashboard
           </button>
 
-          <Card className="border-l-4 border-teal-500">
+          <Card className="border-l-4 border-teal-500 bg-white">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-4xl">{getReportIcon(report.type)}</span>
                   <h1 className="text-2xl font-bold text-gray-900">
-                    {report.name}
+                    {report.report_type?.toUpperCase()} Report
                   </h1>
                 </div>
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                   <span className="flex items-center gap-1">
                     <SlCalender className="text-base" />
-                    {report.date}
+                    {new Date(report.report_date).toLocaleDateString()}
                   </span>
                   {report.doctor && (
                     <span className="flex items-center gap-1">
@@ -202,15 +273,17 @@ const ReportDetails = () => {
                 </div>
               </div>
               <div className="flex gap-3">
-                <button
-                  onClick={() => navigate(`/report/${id}/compare`)}
-                  className="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-600 flex items-center gap-2 shadow-md"
-                >
-                  <VscGraph /> Compare
-                </button>
+                {allReports > 1 && (
+                  <button
+                    onClick={() => navigate(`/report/${id}/compare`)}
+                    className="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-600 flex items-center gap-2 shadow-md"
+                  >
+                    <VscGraph /> Compare
+                  </button>
+                )}
                 <button
                   onClick={handleDownload}
-                  className="bg-teal-500 flex gap-2 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-teal-600 shadow-md"
+                  className="bg-teal-400 flex gap-2 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-teal-600 shadow-md"
                 >
                   <FaUpload /> Download
                 </button>
@@ -255,45 +328,165 @@ const ReportDetails = () => {
                     </span>{" "}
                     Clinical AI Analysis
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {report.aiSummary}
-                  </p>
+                  {/* <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                    {report.ai_explanation}
+                  </p> */}
+                  <div className="space-y-4">
+                    {cbcData.map((item) => (
+                      <div
+                        key={item.name}
+                        className="border rounded-xl p-4 flex justify-between items-start bg-white"
+                      >
+                        <div className="pr-4">
+                          <h3 className="font-semibold text-lg capitalize">
+                            {item.name}
+                            <span className="ml-2 text-sm text-gray-500">
+                              ({item.value})
+                            </span>
+                          </h3>
+
+                          <p className="text-sm text-gray-600 mt-1">
+                            {item.description}
+                          </p>
+
+                          <p className="text-sm mt-2">{item.interpretation}</p>
+                        </div>
+
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium
+          ${
+            item.status === "NORMAL"
+              ? "bg-green-100 text-green-700"
+              : item.status === "LOW"
+              ? "bg-yellow-100 text-yellow-700"
+              : "bg-red-100 text-red-700"
+          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 flex gap-2 mb-4">
                     <FaClipboardList /> Key Findings
                   </h3>
-                  <div className="space-y-4">
-                    {report.findings.map((finding, index) => (
+                  <div className="space-y-4 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {report.metrics?.map((metric) => (
                       <MetricCard
-                        key={index}
-                        parameter={finding.parameter}
-                        value={finding.value}
-                        normalRange={finding.normalRange}
-                        status={finding.status}
-                        explanation={finding.explanation}
-                        trend={finding.trend}
+                        key={metric.id}
+                        parameter={metric.metric_name
+                          .replace("_", " ")
+                          .toUpperCase()}
+                        value={`${metric.metric_value} ${metric.metric_unit}`}
+                        normalRange={metric.normal_range}
+                        status={metric.status}
+                        explanation={null}
+                        trend="stable"
                       />
                     ))}
                   </div>
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <span>
-                      <MdTipsAndUpdates />
-                    </span>{" "}
+                  <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
+                    <MdTipsAndUpdates className="text-green-600 text-xl" />
                     Recommendations
                   </h3>
-                  <ul className="space-y-2">
-                    {report.recommendations.map((rec, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <span className="text-green-600 font-bold">✓</span>
-                        <span className="text-gray-700">{rec}</span>
-                      </li>
+
+                  <div className="grid gap-5">
+                    {recommendations?.map((rec, index) => (
+                      <div
+                        key={index}
+                        className={`rounded-xl border p-5 shadow-sm transition hover:shadow-md ${
+                          rec.type === "warning"
+                            ? "bg-red-50 border-red-200"
+                            : "bg-blue-50 border-blue-200"
+                        }`}
+                      >
+                        {/* Header */}
+                        <div className="flex items-start justify-between mb-3">
+                          <h4 className="font-bold text-gray-900 text-base">
+                            {rec.title}
+                          </h4>
+
+                          <span
+                            className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                              rec.type === "warning"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-blue-100 text-blue-700"
+                            }`}
+                          >
+                            {rec.type.toUpperCase()}
+                          </span>
+                        </div>
+
+                        {/* Message */}
+                        <p className="text-sm text-gray-700 mb-4">
+                          {rec.message}
+                        </p>
+
+                        {/* Actions */}
+                        {rec.actions?.length > 0 && (
+                          <div className="mb-4">
+                            <p className="text-sm font-semibold text-gray-800 mb-2">
+                              What you should do
+                            </p>
+                            <ul className="space-y-1 text-sm text-gray-700">
+                              {rec.actions.map((action, i) => (
+                                <li key={i} className="flex gap-2">
+                                  <span className="text-green-600 font-bold">
+                                    ✓
+                                  </span>
+                                  <span>{action}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Foods to Eat */}
+                        {rec.foods_to_eat?.length > 0 && (
+                          <div className="mb-3">
+                            <p className="text-sm font-semibold text-green-700 mb-1">
+                              Foods to Eat
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {rec.foods_to_eat.map((food, i) => (
+                                <span
+                                  key={i}
+                                  className="px-3 py-1 rounded-full text-xs bg-green-100 text-green-700"
+                                >
+                                  {food}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Foods to Avoid */}
+                        {rec.foods_to_avoid?.length > 0 && (
+                          <div>
+                            <p className="text-sm font-semibold text-red-700 mb-1">
+                              Foods to Avoid
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {rec.foods_to_avoid.map((food, i) => (
+                                <span
+                                  key={i}
+                                  className="px-3 py-1 rounded-full text-xs bg-red-100 text-red-700"
+                                >
+                                  {food}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </div>
             )}
@@ -322,39 +515,30 @@ const ReportDetails = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {report.findings.map((finding, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-gray-100 hover:bg-gray-50"
-                      >
-                        <td className="py-4 px-4 font-semibold text-gray-900">
-                          {finding.parameter}
+                    {report.metrics.map((metric) => (
+                      <tr key={metric.id} className="border-b">
+                        <td className="py-4 px-4 font-semibold">
+                          {metric.metric_name.replace("_", " ").toUpperCase()}
                         </td>
-                        <td className="py-4 px-4 text-gray-900">
-                          {finding.value}
+                        <td className="py-4 px-4">
+                          {metric.metric_value} {metric.metric_unit}
                         </td>
                         <td className="py-4 px-4 text-gray-600">
-                          {finding.normalRange}
+                          {metric.normal_range}
                         </td>
                         <td className="py-4 px-4">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              finding.status === "normal"
+                              metric.status === "normal"
                                 ? "bg-green-100 text-green-700"
-                                : finding.status === "warning"
-                                ? "bg-yellow-100 text-yellow-700"
                                 : "bg-red-100 text-red-700"
                             }`}
                           >
-                            {finding.status.toUpperCase()}
+                            {metric.status.toUpperCase()}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-2xl">
-                          {finding.trend === "up"
-                            ? <HiMiniArrowUpRight className="bg-green-400 p-1 rounded-md text-white text-4xl"/>
-                            : finding.trend === "down"
-                            ? <HiMiniArrowDownRight className="bg-green-400 p-1 rounded-md text-white text-4xl"/>
-                            : <HiMiniArrowRight className="bg-green-400 p-1 rounded-md text-white text-4xl"/>}
+                        <td className="py-4 px-4">
+                          <HiMiniArrowRight className="text-green-500 text-xl" />
                         </td>
                       </tr>
                     ))}
@@ -366,7 +550,7 @@ const ReportDetails = () => {
         </Card>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card
             hover
             onClick={() => navigate(`/report/${id}/compare`)}
@@ -382,7 +566,7 @@ const ReportDetails = () => {
           <Card
             hover
             onClick={() => navigate("/trends")}
-            className="bg-teal-500 text-white border-2 border-teal-600"
+            className="bg-teal-400 text-white border-2 border-teal-600"
           >
             <div className="w-12 h-12 bg-white text-black bg-opacity-20 rounded-lg flex items-center justify-center text-2xl mb-2">
               {" "}
@@ -404,7 +588,7 @@ const ReportDetails = () => {
             <h3 className="font-bold mb-1">Upload New Report</h3>
             <p className="text-sm text-green-100">Submit additional reports</p>
           </Card>
-        </div>
+        </div> */}
       </div>
     </div>
   );

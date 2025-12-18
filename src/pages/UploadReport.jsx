@@ -59,8 +59,10 @@ const UploadReport = () => {
       const result = await uploadReport(uploadedFile, reportType);
       toast.success("Report uploaded successfully! Analyzing... 🔍");
 
+
+      const resultId = result?.message?.report.id || result.report?.id || 1;
       setTimeout(() => {
-        navigate(`/report/${result.reportId || result.report?.id || 1}`);
+        navigate(`/report/${resultId}`);
       }, 1000);
     } catch (err) {
       toast.error(err.message || "Failed to analyze report. Please try again.");
@@ -158,7 +160,7 @@ const UploadReport = () => {
                       onChange={handleFileChange}
                       accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                     />
-                    <span className="bg-teal-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-600 cursor-pointer inline-block shadow-md">
+                    <span className="bg-teal-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-600 cursor-pointer inline-block shadow-md">
                       Browse Files
                     </span>
                   </label>
@@ -198,7 +200,7 @@ const UploadReport = () => {
               <button
                 onClick={handleAnalyze}
                 disabled={!reportType || analyzing}
-                className="w-full bg-teal-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-teal-400 text-white py-4 rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {analyzing ? (
                   <span className="flex items-center justify-center gap-3">

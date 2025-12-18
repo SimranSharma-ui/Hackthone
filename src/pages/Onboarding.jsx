@@ -24,7 +24,7 @@ export default function Onboarding() {
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <Link
               to="/signup"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-teal-500 text-white rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-teal-400 text-white rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md"
             >
               Create Account
               <FaArrowRight />
@@ -73,7 +73,7 @@ export default function Onboarding() {
 
             <div className="h-32 bg-gradient-to-r from-teal-100 to-blue-100 rounded-xl flex items-end p-4 gap-3">
               <div className="w-8 h-16 bg-teal-400 rounded-lg" />
-              <div className="w-8 h-24 bg-teal-500 rounded-lg" />
+              <div className="w-8 h-24 bg-teal-400 rounded-lg" />
               <div className="w-8 h-20 bg-blue-400 rounded-lg" />
               <div className="w-8 h-28 bg-blue-500 rounded-lg" />
             </div>

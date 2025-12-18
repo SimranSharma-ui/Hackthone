@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getHealthTrends } from "../services/api";
+import { getHealthTrends, getTrends } from "../services/api";
 import LineChart from "../Utils/LineChart";
 import Card from "../Utils/Card";
 import Loader from "../Utils/Loader";
@@ -26,45 +26,66 @@ const TrendsAnalysis = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [trendsData, setTrendsData] = useState(null);
+  const [allTrends, setAllTrends] = useState([]);
 
-  const metrics = [
-    {
-      id: "Hemoglobin",
-      name: "Hemoglobin",
-      unit: "g/dL",
-      icon: <MdBloodtype className="text-red-600 text-xl" />,
-    },
-    {
-      id: "White Blood Cells",
-      name: "White Blood Cells",
-      unit: "/μL",
-      icon: <MdOutlineBloodtype className="text-blue-600 text-xl" />,
-    },
-    {
-      id: "Total Cholesterol",
-      name: "Total Cholesterol",
-      unit: "mg/dL",
-      icon: <FaBalanceScale className="text-yellow-600 text-xl" />,
-    },
-    {
-      id: "Blood Sugar",
-      name: "Blood Sugar",
-      unit: "mg/dL",
-      icon: <MdBloodtype className="text-red-600 text-xl" />,
-    },
-    {
-      id: "Platelets",
-      name: "Platelets",
-      unit: "/μL",
-      icon: <MdBloodtype className="text-red-600 text-xl" />,
-    },
-    {
-      id: "LDL Cholesterol",
-      name: "LDL Cholesterol",
-      unit: "mg/dL",
-      icon: <FaBalanceScale className="text-yellow-600 text-xl" />,
-    },
-  ];
+  // const metrics = [
+  //   {
+  //     id: "Hemoglobin",
+  //     name: "Hemoglobin",
+  //     unit: "g/dL",
+  //     icon: <MdBloodtype className="text-red-600 text-xl" />,
+  //   },
+  //   {
+  //     id: "White Blood Cells",
+  //     name: "White Blood Cells",
+  //     unit: "/μL",
+  //     icon: <MdOutlineBloodtype className="text-blue-600 text-xl" />,
+  //   },
+  //   {
+  //     id: "Total Cholesterol",
+  //     name: "Total Cholesterol",
+  //     unit: "mg/dL",
+  //     icon: <FaBalanceScale className="text-yellow-600 text-xl" />,
+  //   },
+  //   {
+  //     id: "Blood Sugar",
+  //     name: "Blood Sugar",
+  //     unit: "mg/dL",
+  //     icon: <MdBloodtype className="text-red-600 text-xl" />,
+  //   },
+  //   {
+  //     id: "Platelets",
+  //     name: "Platelets",
+  //     unit: "/μL",
+  //     icon: <MdBloodtype className="text-red-600 text-xl" />,
+  //   },
+  //   {
+  //     id: "LDL Cholesterol",
+  //     name: "LDL Cholesterol",
+  //     unit: "mg/dL",
+  //     icon: <FaBalanceScale className="text-yellow-600 text-xl" />,
+  //   },
+  // ];
+
+  const fetchAllTrends = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await getTrends();
+      console.log("Fetched trends:", response);
+      setAllTrends(response.message.metrics || []);
+      // Process and set trends data as needed
+    } catch (err) {
+      setError(err.message);
+      toast.info("Using sample trends data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllTrends();
+  }, []);
 
   useEffect(() => {
     if (selectedMetric) {
@@ -76,14 +97,30 @@ const TrendsAnalysis = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await getHealthTrends(selectedMetric, 6);
-      setTrendsData(data);
+
+      const response = await getHealthTrends(selectedMetric, 6);
+
+      // ✅ normalize backend response
+      const normalizedData = {
+        metric_name: response.message.metric_name,
+        unit: response.message.data_points[0]?.unit,
+        data: response.message.data_points.map((item) => ({
+          date: new Date(item.date).toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          value: Number(item.value.replace(/,/g, "")),
+
+          status: item.status,
+        })),
+      };
+
+      setTrendsData(normalizedData);
     } catch (err) {
       setError(err.message);
-      toast.info(
-        "Using sample trends data. Connect to backend for real trends."
-      );
-      // Use mock data as fallback
+      toast.info("Using sample trends data");
       setTrendsData(getMockTrendsData());
     } finally {
       setLoading(false);
@@ -104,7 +141,18 @@ const TrendsAnalysis = () => {
   };
 
   const currentData = trendsData?.data || [];
-  const currentMetric = metrics.find((m) => m.id === selectedMetric);
+  console.log("Current Data:", trendsData);
+  const currentMetric = allTrends.find((m) => m.metric_name === selectedMetric);
+
+const formatLabel = (value = "") => {
+  if (!value) return "";
+
+  return value
+    .toString()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white py-8 px-4">
@@ -130,22 +178,22 @@ const TrendsAnalysis = () => {
         {/* Metric Selector */}
         <Card className="mb-8 border-t-4 border-teal-500">
           <h2 className="text-lg font-bold text-gray-900 mb-4">
-            Select Clinical Parameter
+            Clinical Metrics Overview
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {metrics.map((metric) => (
+            {allTrends.map((metric) => (
               <button
                 key={metric.id}
-                onClick={() => setSelectedMetric(metric.id)}
+                onClick={() => setSelectedMetric(metric.metric_name)}
                 className={`p-4 rounded-lg border-2 transition-all ${
-                  selectedMetric === metric.id
+                  selectedMetric === metric.metric_name
                     ? "border-teal-500 bg-teal-50 shadow-md"
                     : "border-gray-200 hover:border-teal-300"
                 }`}
               >
                 <div className="text-2xl mb-2">{metric.icon}</div>
                 <div className="font-semibold text-gray-800 text-sm">
-                  {metric.name}
+                  {formatLabel(metric.metric_name)}
                 </div>
                 <div className="text-xs text-gray-500">{metric.unit}</div>
               </button>
@@ -157,7 +205,7 @@ const TrendsAnalysis = () => {
           {/* Chart Area */}
           <Card className="lg:col-span-2">
             <h2 className="flex items-center text-lg font-bold text-gray-900 mb-4 gap-2">
-              {currentMetric?.icon} {currentMetric?.name} Over Time
+              {currentMetric?.icon} {formatLabel(currentMetric?.metric_name)} Over Time
             </h2>
 
             {loading ? (
@@ -184,7 +232,7 @@ const TrendsAnalysis = () => {
                   data={currentData}
                   dataKey="value"
                   xAxisKey="date"
-                color="#0d9488"
+                  color="#0d9488"
                   unit={trendsData?.unit || currentMetric?.unit}
                 />
 
@@ -316,7 +364,7 @@ const TrendsAnalysis = () => {
               )}
             </Card>
 
-            <Card className="bg-teal-500 text-white border-2 border-teal-600">
+            <Card className="bg-teal-400 text-white border-2 border-teal-600">
               <h3 className="text-lg flex gap-2 font-bold mb-3">
                 <FaBullseye className="text-indigo-600 text-xl" /> Continuous
                 Monitoring

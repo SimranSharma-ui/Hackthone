@@ -253,7 +253,7 @@ const HealthTips = () => {
         </div>
 
         {/* Additional Resources */}
-        <div className="mt-8 bg-teal-500 text-white rounded-xl border-2 border-teal-600 shadow-md p-8">
+        <div className="mt-8 bg-teal-400 text-white rounded-xl border-2 border-teal-600 shadow-md p-8">
           <h2 className="text-2xl font-bold mb-4">
             Personalized Clinical Recommendations
           </h2>

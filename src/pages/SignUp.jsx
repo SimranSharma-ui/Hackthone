@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import FloatingInput from "../componants/FloatingInput";
 import { useState } from "react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { signUp } from "../services/api";
 import { FaHospital, FaLock } from "react-icons/fa";
 
@@ -55,14 +55,18 @@ export default function SignUp() {
     try {
       setLoading(true);
       const response = await signUp(formData);
-
+      console.log("SignUp response:", response);
       // Store token if provided
-      if (response.token) {
-        localStorage.setItem("token", response.token);
+      if (response?.data?.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+
+      if (response) {
+        localStorage.setItem("userData", JSON.stringify(response));
       }
 
       toast.success("Account created successfully! Welcome aboard! ");
-      
+
       // Navigate to dashboard after a short delay
       setTimeout(() => {
         navigate("/dashboard");
@@ -79,7 +83,7 @@ export default function SignUp() {
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border-2 border-teal-100">
         <div className="text-center mb-8">
           <div className="inline-block mb-4">
-            <div className="w-16 h-16 bg-teal-500 rounded-lg flex items-center justify-center text-white shadow-md">
+            <div className="w-16 h-16 bg-teal-400 rounded-lg flex items-center justify-center text-white shadow-md">
               <FaHospital className="text-3xl" />
             </div>
           </div>
@@ -164,7 +168,7 @@ export default function SignUp() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-teal-500 text-white p-4 rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-teal-400 text-white p-4 rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -186,7 +190,8 @@ export default function SignUp() {
         </p>
         <div className="mt-4 pt-4 border-t border-gray-200 text-center">
           <p className="text-xs text-gray-500 flex items-center justify-center gap-2">
-            <FaLock className="text-teal-600" /> Your data is encrypted and HIPAA compliant
+            <FaLock className="text-teal-600" /> Your data is encrypted and
+            HIPAA compliant
           </p>
         </div>
       </div>
