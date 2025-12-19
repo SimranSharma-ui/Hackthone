@@ -12,7 +12,7 @@ const ComparisonChart = ({ metrics }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-800 mb-2">{payload[0].payload.name}</p>
+          <p className="font-semibold text-[#156669] mb-2">{payload[0].payload.name}</p>
           {payload.map((entry, index) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.value.toFixed(2)}
@@ -26,7 +26,7 @@ const ComparisonChart = ({ metrics }) => {
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">Parameter Comparison</h3>
+      <h3 className="text-lg font-semibold text-[#156669] mb-4">Parameter Comparison</h3>
       <ResponsiveContainer width="100%" height={350}>
         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />

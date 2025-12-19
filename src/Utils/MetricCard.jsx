@@ -24,11 +24,11 @@ const MetricCard = ({ parameter, value, normalRange, status, explanation, trend 
     <div className={`border-2 rounded-xl p-5 ${statusColors[status] || 'border-gray-200 bg-gray-50'}`}>
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <h4 className="font-bold text-lg text-gray-800 mb-1">{parameter}</h4>
+          <h4 className="font-bold text-lg text-[#156669] mb-1">{parameter}</h4>
           <p className="text-sm text-gray-600">Normal: {normalRange}</p>
         </div>
         <div className="text-right ml-4">
-          <p className="text-2xl font-bold text-gray-800">{value}</p>
+          <p className="text-2xl font-bold text-[#156669]">{value}</p>
           {trend && (
             <span className="text-sm text-gray-600 flex items-center justify-end gap-1 mt-1">
               <span>{trendIcons[trend]}</span>
@@ -42,7 +42,7 @@ const MetricCard = ({ parameter, value, normalRange, status, explanation, trend 
         {status.toUpperCase()}
       </div>
       
-      <p className="text-sm text-gray-700 leading-relaxed">{explanation}</p>
+      <p className="text-sm text-[#7faaca] leading-relaxed">{explanation}</p>
     </div>
   );
 };

@@ -40,18 +40,21 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full bg-white border-b-2 border-teal-500 shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+    <header className="w-full bg-white border-b-2 border-[#7faaca] shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-50">
       {/* Logo */}
       <Link
-        to={isAuthenticated ? "/" : "/"}
-        className="flex items-center gap-3 hover:opacity-80 transition"
+        to="/"
+        className="flex items-center hover:opacity-80 transition"
       >
-        <div className="w-12 h-12 bg-teal-400 rounded-lg flex items-center justify-center text-white shadow-md">
-          <FaHospital className="text-2xl" />
-        </div>
-        <div>
-          <span className="text-2xl font-bold text-gray-800">MediLens</span>
-          <p className="text-xs text-teal-600">Clinical Analysis Platform</p>
+        <img
+          src="/logo.png"
+          alt="MediLens Logo"
+          className="h-16 w-auto object-contain"
+        />
+
+        <div className="leading-tight">
+          <span className="text-2xl font-bold text-[#156669]">MediLens</span>
+          <p className="text-xs text-[#7faac8]">Clinical Analysis Platform</p>
         </div>
       </Link>
 
@@ -62,8 +65,8 @@ const Header = () => {
             to="/dashboard"
             className={`font-semibold transition flex items-center gap-2 ${
               location.pathname === "/dashboard"
-                ? "text-teal-600"
-                : "text-gray-600 hover:text-teal-600"
+                ? "text-[#7faaca]"
+                : "text-gray-600 hover:text-[#7faaca]"
             }`}
           >
             <FaClipboardList /> Dashboard
@@ -72,8 +75,8 @@ const Header = () => {
             to="/upload"
             className={`font-semibold transition flex items-center gap-2 ${
               location.pathname === "/upload"
-                ? "text-teal-600"
-                : "text-gray-600 hover:text-teal-600"
+                ? "text-[#7faaca]"
+                : "text-gray-600 hover:text-[#7faaca]"
             }`}
           >
             <FaUpload /> Upload
@@ -82,8 +85,8 @@ const Header = () => {
             to="/trends"
             className={`font-semibold transition flex items-center gap-2 ${
               location.pathname === "/trends"
-                ? "text-teal-600"
-                : "text-gray-600 hover:text-teal-600"
+                ? "text-[#7faaca]"
+                : "text-gray-600 hover:text-[#7faaca]"
             }`}
           >
             <FaChartLine /> Trends
@@ -92,8 +95,8 @@ const Header = () => {
             to="/health-tips"
             className={`font-semibold transition flex items-center gap-2 ${
               location.pathname === "/health-tips"
-                ? "text-teal-600"
-                : "text-gray-600 hover:text-teal-600"
+                ? "text-[#7faaca]"
+                : "text-gray-600 hover:text-[#7faaca]"
             }`}
           >
             <FaLightbulb /> Health Tips
@@ -107,7 +110,7 @@ const Header = () => {
           <>
             <Link
               to="/upload"
-              className="px-5 py-2.5 flex items-center gap-2 text-sm font-bold bg-teal-400 text-white rounded-lg hover:bg-teal-600 transition shadow-md"
+              className="px-5 py-2.5 flex items-center gap-2 text-sm font-bold bg-[#7faaca] text-white rounded-lg hover:bg-[#7faaca] transition shadow-md"
             >
               <FaUpload /> Upload Report
             </Link>
@@ -135,13 +138,13 @@ const Header = () => {
           <>
             <Link
               to="/login"
-              className="px-5 py-2.5 text-sm font-semibold text-gray-700 hover:text-teal-600 transition"
+              className="px-5 py-2.5 text-sm font-semibold text-[#7faaca] hover:text-[#7faaca] transition"
             >
               Sign In
             </Link>
             <Link
               to="/signup"
-              className="px-5 py-2.5 text-sm font-bold bg-teal-400 text-white rounded-lg hover:bg-teal-600 transition shadow-md"
+              className="px-5 py-2.5 text-sm font-bold bg-[#7faaca] text-white rounded-lg hover:bg-[#7faaca] transition shadow-md"
             >
               Register
             </Link>

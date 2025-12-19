@@ -62,11 +62,11 @@ export default function Login() {
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border-2 border-teal-100">
         <div className="text-center mb-8">
           <div className="inline-block mb-4">
-            <div className="w-16 h-16 bg-teal-400 rounded-lg flex items-center justify-center text-white shadow-md">
+            <div className="w-16 h-16 bg-[#7faaca] rounded-lg flex items-center justify-center text-white shadow-md">
               <FaHospital className="text-3xl" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          <h2 className="text-3xl font-bold text-[#156669] mb-2">
             Patient Login
           </h2>
           <p className="text-gray-600 text-sm">
@@ -93,7 +93,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-teal-400 text-white p-4 rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#7faaca] text-white p-4 rounded-lg font-bold text-lg hover:bg-[#7faaca] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -108,7 +108,7 @@ export default function Login() {
           </button>
         </form>
         <div className="mt-6 text-center">
-          <a href="#" className="text-teal-600 text-sm hover:underline">
+          <a href="#" className="text-[#7faaca] text-sm hover:underline">
             Forgot password?
           </a>
         </div>
@@ -116,14 +116,14 @@ export default function Login() {
           Don't have an account?{" "}
           <Link
             to="/signup"
-            className="text-teal-600 font-bold hover:underline"
+            className="text-[#7faaca] font-bold hover:underline"
           >
             Register Now
           </Link>
         </p>
         <div className="mt-4 pt-4 border-t border-gray-200 text-center">
           <p className="text-xs text-gray-500 flex items-center justify-center gap-2">
-            <FaLock className="text-teal-600" /> Secure login with 256-bit
+            <FaLock className="text-[#7faaca]" /> Secure login with 256-bit
             encryption
           </p>
         </div>

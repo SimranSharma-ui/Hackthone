@@ -22,7 +22,7 @@ import { VscGraph } from "react-icons/vsc";
 
 const TrendsAnalysis = () => {
   const navigate = useNavigate();
-  const [selectedMetric, setSelectedMetric] = useState("Hemoglobin");
+  const [selectedMetric, setSelectedMetric] = useState("hemoglobin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [trendsData, setTrendsData] = useState(null);
@@ -144,15 +144,14 @@ const TrendsAnalysis = () => {
   console.log("Current Data:", trendsData);
   const currentMetric = allTrends.find((m) => m.metric_name === selectedMetric);
 
-const formatLabel = (value = "") => {
-  if (!value) return "";
+  const formatLabel = (value = "") => {
+    if (!value) return "";
 
-  return value
-    .toString()
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-};
-
+    return value
+      .toString()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white py-8 px-4">
@@ -161,12 +160,12 @@ const formatLabel = (value = "") => {
         <div className="mb-8">
           <button
             onClick={() => navigate("/dashboard")}
-            className="text-teal-600 hover:text-teal-700 mb-4 flex items-center gap-2 text-sm font-medium"
+            className="text-[#7faaca] hover:text-teal-700 mb-4 flex items-center gap-2 text-sm font-medium"
           >
             ← Back to Dashboard
           </button>
-          <div className="bg-white rounded-xl p-6 border-l-4 border-teal-500 shadow-sm">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="bg-white rounded-xl p-6 border-l-4 border-[#7faaca] shadow-sm">
+            <h1 className="text-3xl font-bold text-[#156669] mb-2">
               Health Metrics Trend Analysis
             </h1>
             <p className="text-gray-600 text-sm">
@@ -176,36 +175,63 @@ const formatLabel = (value = "") => {
         </div>
 
         {/* Metric Selector */}
-        <Card className="mb-8 border-t-4 border-teal-500">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">
+        <Card className="mb-8 border-t-4 border-[#7faaca] bg-[#b8d2e4]">
+          <h2 className="text-lg font-bold text-[#156669] mb-4">
             Clinical Metrics Overview
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {allTrends.map((metric) => (
-              <button
-                key={metric.id}
-                onClick={() => setSelectedMetric(metric.metric_name)}
-                className={`p-4 rounded-lg border-2 transition-all ${
-                  selectedMetric === metric.metric_name
-                    ? "border-teal-500 bg-teal-50 shadow-md"
-                    : "border-gray-200 hover:border-teal-300"
-                }`}
-              >
-                <div className="text-2xl mb-2">{metric.icon}</div>
-                <div className="font-semibold text-gray-800 text-sm">
-                  {formatLabel(metric.metric_name)}
-                </div>
-                <div className="text-xs text-gray-500">{metric.unit}</div>
-              </button>
-            ))}
+            {allTrends.map((metric) => {
+              const isSelected = selectedMetric === metric.metric_name;
+
+              return (
+                <button
+                  key={metric.id}
+                  onClick={() => setSelectedMetric(metric.metric_name)}
+                  className={`
+        p-4 rounded-lg border transition-all text-center
+        focus:outline-none focus:ring-2 focus:ring-blue-500
+        ${
+          isSelected
+            ? "border-blue-600 bg-blue-50 shadow-sm"
+            : "border-gray-200 bg-white hover:border-blue-400 hover:bg-gray-50"
+        }
+      `}
+                >
+                  <div
+                    className={`text-2xl mb-2 ${
+                      isSelected ? "text-blue-600" : "text-gray-500"
+                    }`}
+                  >
+                    {metric.icon}
+                  </div>
+
+                  <div
+                    className={`font-semibold  text-sm ${
+                      isSelected ? "text-blue-900" : "text-[#156669]"
+                    }`}
+                  >
+                    {formatLabel(metric.metric_name)}
+                  </div>
+
+                  <div
+                    className={`text-xs ${
+                      isSelected ? "text-blue-700" : "text-gray-500"
+                    }`}
+                  >
+                    {metric.unit}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Chart Area */}
           <Card className="lg:col-span-2">
-            <h2 className="flex items-center text-lg font-bold text-gray-900 mb-4 gap-2">
-              {currentMetric?.icon} {formatLabel(currentMetric?.metric_name)} Over Time
+            <h2 className="flex items-center text-lg font-bold text-[#156669] mb-4 gap-2">
+              {currentMetric?.icon} {formatLabel(currentMetric?.metric_name)}{" "}
+              Over Time
             </h2>
 
             {loading ? (
@@ -218,7 +244,7 @@ const formatLabel = (value = "") => {
                   {" "}
                   <VscGraph />
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                <h3 className="text-xl font-bold text-[#156669] mb-2">
                   No Data Available
                 </h3>
                 <p className="text-gray-600">
@@ -232,14 +258,14 @@ const formatLabel = (value = "") => {
                   data={currentData}
                   dataKey="value"
                   xAxisKey="date"
-                  color="#0d9488"
+                  color="#7faac8"
                   unit={trendsData?.unit || currentMetric?.unit}
                 />
 
                 {/* Comparison */}
                 {currentData.length >= 2 && (
                   <div className="bg-teal-50 rounded-lg p-5 border-2 border-teal-200 mt-6">
-                    <h2 className="flex items-center text-lg font-bold text-gray-900 mb-4 gap-2">
+                    <h2 className="flex items-center text-lg font-bold text-[#156669] mb-4 gap-2">
                       <VscGraph className="text-xl" />
                       Clinical Change Analysis
                     </h2>
@@ -249,7 +275,7 @@ const formatLabel = (value = "") => {
                         <p className="text-xs text-gray-600 mb-1">
                           First Reading
                         </p>
-                        <p className="text-xl font-bold text-gray-800">
+                        <p className="text-xl font-bold text-[#156669]">
                           {currentData[0].value}{" "}
                           {trendsData?.unit || currentMetric?.unit}
                         </p>
@@ -261,7 +287,7 @@ const formatLabel = (value = "") => {
                         <p className="text-xs text-gray-600 mb-1">
                           Latest Reading
                         </p>
-                        <p className="text-xl font-bold text-gray-800">
+                        <p className="text-xl font-bold text-[#156669]">
                           {currentData[currentData.length - 1].value}{" "}
                           {trendsData?.unit || currentMetric?.unit}
                         </p>
@@ -272,7 +298,7 @@ const formatLabel = (value = "") => {
                     </div>
                     <div className="mt-4 pt-4 border-t border-teal-200">
                       <p className="text-xs text-gray-600 mb-1">Net Change</p>
-                      <p className="text-lg font-bold text-gray-800">
+                      <p className="text-lg font-bold text-[#156669]">
                         {currentData[currentData.length - 1].value -
                           currentData[0].value >
                         0
@@ -294,7 +320,7 @@ const formatLabel = (value = "") => {
           {/* Insights Panel */}
           <div className="space-y-5">
             <Card>
-              <h2 className="flex items-center text-lg font-bold text-gray-900 mb-4 gap-2">
+              <h2 className="flex items-center text-lg font-bold text-[#156669] mb-4 gap-2">
                 <MdTipsAndUpdates className="text-xl" />
                 Insights
               </h2>
@@ -328,11 +354,11 @@ const formatLabel = (value = "") => {
                           )}
                         </span>
                         <div>
-                          <h3 className="font-bold text-gray-800 mb-1">
+                          <h3 className="font-bold text-[#156669] mb-1">
                             Trend Analysis
                           </h3>
                           <p className="text-sm text-gray-600">
-                            {currentMetric?.name} has{" "}
+                            {formatLabel(currentMetric?.metric_name)} has{" "}
                             {currentData[currentData.length - 1].value >
                             currentData[0].value
                               ? "increased"
@@ -350,12 +376,12 @@ const formatLabel = (value = "") => {
                         <VscGraph />
                       </span>
                       <div>
-                        <h3 className="font-bold text-gray-800 mb-1">
+                        <h3 className="font-bold text-[#156669] mb-1">
                           Data Points
                         </h3>
                         <p className="text-sm text-gray-600">
                           Tracking {currentData.length} measurements for{" "}
-                          {currentMetric?.name}
+                          {formatLabel(currentMetric?.metric_name)}
                         </p>
                       </div>
                     </div>
@@ -364,7 +390,7 @@ const formatLabel = (value = "") => {
               )}
             </Card>
 
-            <Card className="bg-teal-400 text-white border-2 border-teal-600">
+            <Card className="bg-[#7faaca] text-white border-2 border-teal-600">
               <h3 className="text-lg flex gap-2 font-bold mb-3">
                 <FaBullseye className="text-indigo-600 text-xl" /> Continuous
                 Monitoring
@@ -375,7 +401,7 @@ const formatLabel = (value = "") => {
               </p>
               <button
                 onClick={() => navigate("/upload")}
-                className="w-full bg-white text-teal-600 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
+                className="w-full bg-white text-[#7faaca] py-3 rounded-lg font-bold hover:shadow-lg transition-all"
               >
                 Upload New Report
               </button>

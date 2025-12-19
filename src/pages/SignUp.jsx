@@ -83,11 +83,11 @@ export default function SignUp() {
       <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border-2 border-teal-100">
         <div className="text-center mb-8">
           <div className="inline-block mb-4">
-            <div className="w-16 h-16 bg-teal-400 rounded-lg flex items-center justify-center text-white shadow-md">
+            <div className="w-16 h-16 bg-[#7faaca] rounded-lg flex items-center justify-center text-white shadow-md">
               <FaHospital className="text-3xl" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          <h2 className="text-3xl font-bold text-[#156669] mb-2">
             Patient Registration
           </h2>
           <p className="text-gray-600 text-sm">
@@ -132,7 +132,7 @@ export default function SignUp() {
           />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[#7faaca] mb-2">
               Gender
             </label>
             <select
@@ -168,7 +168,7 @@ export default function SignUp() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-teal-400 text-white p-4 rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#7faaca] text-white p-4 rounded-lg font-bold text-lg hover:bg-[#7faaca] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -184,13 +184,13 @@ export default function SignUp() {
         </form>
         <p className="mt-6 text-center text-gray-600 text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="text-teal-600 font-bold hover:underline">
+          <Link to="/login" className="text-[#7faaca] font-bold hover:underline">
             Sign In
           </Link>
         </p>
         <div className="mt-4 pt-4 border-t border-gray-200 text-center">
           <p className="text-xs text-gray-500 flex items-center justify-center gap-2">
-            <FaLock className="text-teal-600" /> Your data is encrypted and
+            <FaLock className="text-[#7faaca]" /> Your data is encrypted and
             HIPAA compliant
           </p>
         </div>

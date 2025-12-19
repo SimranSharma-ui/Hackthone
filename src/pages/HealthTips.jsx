@@ -177,7 +177,7 @@ const HealthTips = () => {
       case "low":
         return "bg-green-100 text-green-700 border-green-300";
       default:
-        return "bg-gray-100 text-gray-700 border-gray-300";
+        return "bg-gray-100 text-[#7faaca] border-gray-300";
     }
   };
 
@@ -188,12 +188,12 @@ const HealthTips = () => {
         <div className="mb-8">
           <button
             onClick={() => navigate("/dashboard")}
-            className="text-teal-600 hover:text-teal-700 mb-4 flex items-center gap-2 font-medium"
+            className="text-[#7faaca] hover:text-teal-700 mb-4 flex items-center gap-2 font-medium"
           >
             ← Back to Dashboard
           </button>
-          <div className="bg-white rounded-xl p-6 border-l-4 border-teal-500 shadow-sm">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="bg-white rounded-xl p-6 border-l-4 border-[#7faaca] shadow-sm">
+            <h1 className="text-3xl font-bold text-[#156669] mb-2">
               Clinical Health Guidelines
             </h1>
             <p className="text-gray-600 text-sm">
@@ -203,8 +203,8 @@ const HealthTips = () => {
         </div>
 
         {/* Category Filter */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8 border-t-4 border-teal-500">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8 border-t-4 border-[#7faaca]">
+          <h2 className="text-xl font-bold text-[#156669] mb-4">
             Health Categories
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -214,12 +214,12 @@ const HealthTips = () => {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   selectedCategory === category.id
-                    ? "border-teal-500 bg-teal-50 shadow-md"
+                    ? "bg-[#7faaca] bg-teal-50 shadow-md"
                     : "border-gray-200 hover:border-teal-300"
                 }`}
               >
                 <div className="text-3xl mb-2">{category.icon}</div>
-                <div className="font-semibold text-gray-800 text-sm">
+                <div className="font-semibold text-[#156669] text-sm">
                   {category.name}
                 </div>
               </button>
@@ -244,7 +244,7 @@ const HealthTips = () => {
                   {tip.priority}
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3">
+              <h3 className="text-xl font-bold text-[#156669] mb-3">
                 {tip.title}
               </h3>
               <p className="text-gray-600 leading-relaxed">{tip.description}</p>
@@ -253,7 +253,7 @@ const HealthTips = () => {
         </div>
 
         {/* Additional Resources */}
-        <div className="mt-8 bg-teal-400 text-white rounded-xl border-2 border-teal-600 shadow-md p-8">
+        <div className="mt-8 bg-[#7faaca] text-white rounded-xl border-2 border-teal-600 shadow-md p-8">
           <h2 className="text-2xl font-bold mb-4">
             Personalized Clinical Recommendations
           </h2>
@@ -264,7 +264,7 @@ const HealthTips = () => {
           </p>
           <button
             onClick={() => navigate("/upload")}
-            className="bg-white text-teal-600 px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
+            className="bg-white text-[#7faaca] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
           >
             Upload Medical Report
           </button>
@@ -272,7 +272,7 @@ const HealthTips = () => {
 
         {/* Disclaimer */}
         <div className="mt-8 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6">
-          <p className="text-sm text-gray-700 text-center">
+          <p className="text-sm text-[#7faaca] text-center">
             <strong>⚠️ Medical Disclaimer:</strong> These guidelines are for
             informational purposes only and do not constitute medical advice,
             diagnosis, or treatment. Always consult qualified healthcare

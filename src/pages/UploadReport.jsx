@@ -96,12 +96,12 @@ const UploadReport = () => {
         <div className="mb-8">
           <button
             onClick={() => navigate("/dashboard")}
-            className="text-teal-600 hover:text-teal-700 mb-4 flex items-center gap-2 font-medium"
+            className="text-[#7faaca] hover:text-teal-700 mb-4 flex items-center gap-2 font-medium"
           >
             ← Back to Dashboard
           </button>
-          <div className="bg-white rounded-xl p-6 border-l-4 border-teal-500 shadow-sm">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="bg-white rounded-xl p-6 border-l-4 border-[#7faaca] shadow-sm">
+            <h1 className="text-3xl font-bold text-[#156669] mb-2">
               Medical Report Upload
             </h1>
             <p className="text-gray-600 text-sm">
@@ -115,8 +115,8 @@ const UploadReport = () => {
           <div
             className={`border-3 border-dashed rounded-2xl p-12 text-center transition-all ${
               dragActive
-                ? "border-teal-500 bg-teal-50"
-                : "border-gray-300 hover:border-teal-400"
+                ? "bg-[#7faaca] bg-teal-50"
+                : "border-gray-300 hover:border-[#7faaca]"
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -129,7 +129,7 @@ const UploadReport = () => {
                   <FaCheck />
                 </div>
                 <div>
-                  <p className="text-xl font-semibold text-gray-800">
+                  <p className="text-xl font-semibold text-[#156669]">
                     {uploadedFile.name}
                   </p>
                   <p className="text-gray-500">
@@ -149,7 +149,7 @@ const UploadReport = () => {
                   <FaFileAlt />
                 </div>
                 <div>
-                  <p className="text-xl font-semibold text-gray-800 mb-2">
+                  <p className="text-xl font-semibold text-[#156669] mb-2">
                     Drag and drop your report here
                   </p>
                   <p className="text-gray-500 mb-4">or</p>
@@ -160,7 +160,7 @@ const UploadReport = () => {
                       onChange={handleFileChange}
                       accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                     />
-                    <span className="bg-teal-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-600 cursor-pointer inline-block shadow-md">
+                    <span className="bg-[#7faaca] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#7faaca] cursor-pointer inline-block shadow-md">
                       Browse Files
                     </span>
                   </label>
@@ -176,7 +176,7 @@ const UploadReport = () => {
           {uploadedFile && (
             <div className="mt-8 space-y-6">
               <div>
-                <label className="block text-gray-700 font-semibold mb-4 text-lg">
+                <label className="block text-[#7faaca] font-semibold mb-4 text-lg">
                   Select Report Type
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -186,12 +186,12 @@ const UploadReport = () => {
                       onClick={() => setReportType(type.id)}
                       className={`p-6 rounded-xl border-3 transition-all ${
                         reportType === type.id
-                          ? "border-teal-500 bg-teal-50 shadow-lg"
+                          ? "bg-[#7faaca] bg-teal-50 shadow-lg"
                           : "border-gray-300 hover:border-teal-300 bg-white"
                       }`}
                     >
                       <div className="text-4xl mb-3">{type.icon}</div>
-                      <div className="font-bold text-gray-800">{type.name}</div>
+                      <div className="font-bold text-[#156669]">{type.name}</div>
                     </button>
                   ))}
                 </div>
@@ -200,7 +200,7 @@ const UploadReport = () => {
               <button
                 onClick={handleAnalyze}
                 disabled={!reportType || analyzing}
-                className="w-full bg-teal-400 text-white py-4 rounded-lg font-bold text-lg hover:bg-teal-600 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#7faaca] text-white py-4 rounded-lg font-bold text-lg hover:bg-[#7faaca] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {analyzing ? (
                   <span className="flex items-center justify-center gap-3">
@@ -221,7 +221,7 @@ const UploadReport = () => {
             <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center text-2xl mb-3">
               <FaLock className="text-yellow-500 text-xl" />
             </div>
-            <h3 className="font-bold text-gray-800 mb-2">HIPAA Compliant</h3>
+            <h3 className="font-bold text-[#156669] mb-2">HIPAA Compliant</h3>
             <p className="text-sm text-gray-600">
               256-bit encryption ensures your medical data stays private and
               secure
@@ -231,7 +231,7 @@ const UploadReport = () => {
             <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center text-2xl mb-3">
               <FaMicroscope />
             </div>
-            <h3 className="font-bold text-gray-800 mb-2">Clinical AI Engine</h3>
+            <h3 className="font-bold text-[#156669] mb-2">Clinical AI Engine</h3>
             <p className="text-sm text-gray-600">
               Advanced algorithms analyze and explain complex medical
               terminology
@@ -241,7 +241,7 @@ const UploadReport = () => {
             <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center text-2xl mb-3">
               <FaBolt className="text-yellow-500 text-xl" />
             </div>
-            <h3 className="font-bold text-gray-800 mb-2">Rapid Processing</h3>
+            <h3 className="font-bold text-[#156669] mb-2">Rapid Processing</h3>
             <p className="text-sm text-gray-600">
               Receive detailed analysis and insights within seconds of upload
             </p>

@@ -124,44 +124,44 @@ const CompareReports = () => {
         comparisonResponse.message.previous_report.report_date
       );
 
-    const comparisonPayload = {
-  current_report: {
-    id: comparisonResponse.message.current_report.id,
-    name: "CBC Report",
-    date: new Date(
-      comparisonResponse.message.current_report.report_date
-    ).toLocaleDateString(),
-    type: comparisonResponse.message.current_report.report_type,
-  },
+      const comparisonPayload = {
+        current_report: {
+          id: comparisonResponse.message.current_report.id,
+          name: "CBC Report",
+          date: new Date(
+            comparisonResponse.message.current_report.report_date
+          ).toLocaleDateString(),
+          type: comparisonResponse.message.current_report.report_type,
+        },
 
-  previous_report: {
-    id: comparisonResponse.message.previous_report.id,
-    name: "CBC Report",
-    date: new Date(
-      comparisonResponse.message.previous_report.report_date
-    ).toLocaleDateString(),
-    type: comparisonResponse.message.previous_report.report_type,
-  },
+        previous_report: {
+          id: comparisonResponse.message.previous_report.id,
+          name: "CBC Report",
+          date: new Date(
+            comparisonResponse.message.previous_report.report_date
+          ).toLocaleDateString(),
+          type: comparisonResponse.message.previous_report.report_type,
+        },
 
-  comparison: {
-    time_difference: comparisonResponse.message.comparison.time_difference,
-    summary: comparisonResponse.message.comparison.summary,
-    metrics: comparisonResponse.message.comparison.metrics.map((m) => ({
-      name: m.name,
-      previous_value: m.previous_value,
-      current_value: m.current_value,
-      change: m.change,
-      change_percentage: m.change_percentage,
-      trend: m.trend,
-      interpretation: m.interpretation,
-    })),
-  },
-};
-
+        comparison: {
+          time_difference:
+            comparisonResponse.message.comparison.time_difference,
+          summary: comparisonResponse.message.comparison.summary,
+          metrics: comparisonResponse.message.comparison.metrics.map((m) => ({
+            name: m.name,
+            previous_value: m.previous_value,
+            current_value: m.current_value,
+            change: m.change,
+            change_percentage: m.change_percentage,
+            trend: m.trend,
+            interpretation: m.interpretation,
+          })),
+        },
+      };
 
       setComparisonData(comparisonPayload);
 
-      toast.success("Comparison loaded successfully! ");
+      // toast.success("Comparison loaded successfully! ");
     } catch (err) {
       console.error("Comparison error:", err);
       setError(err.message);
@@ -183,18 +183,17 @@ const CompareReports = () => {
     return key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
-const getTrend = (prev, curr) => {
-  const p = parseFloat(prev);
-  const c = parseFloat(curr);
+  const getTrend = (prev, curr) => {
+    const p = parseFloat(prev);
+    const c = parseFloat(curr);
 
-  if (isNaN(p) || isNaN(c)) return "stable";
+    if (isNaN(p) || isNaN(c)) return "stable";
 
-  if (c > p) return "increased";
-  if (c < p) return "decreased";
+    if (c > p) return "increased";
+    if (c < p) return "decreased";
 
-  return "stable";
-};
-
+    return "stable";
+  };
 
   const getChange = (prev, curr) => {
     const p = parseFloat(prev);
@@ -245,46 +244,45 @@ const getTrend = (prev, curr) => {
     });
   };
 
-const getTrendColor = (trend) => {
-  switch (trend) {
-    case "improved":
-      return "bg-green-50 border-green-300 text-green-700";
+  const getTrendColor = (trend) => {
+    switch (trend) {
+      case "improved":
+        return "bg-green-50 border-green-300 text-green-700";
 
-    case "increased":
-      return "bg-yellow-50 border-yellow-300 text-yellow-700";
+      case "increased":
+        return "bg-yellow-50 border-yellow-300 text-yellow-700";
 
-    case "worsened":
-    case "decreased":
-      return "bg-red-50 border-red-300 text-red-700";
+      case "worsened":
+      case "decreased":
+        return "bg-red-50 border-red-300 text-red-700";
 
-    case "stable":
-      return "bg-blue-50 border-blue-300 text-blue-700";
+      case "stable":
+        return "bg-blue-50 border-blue-300 text-blue-700";
 
-    default:
-      return "bg-gray-50 border-gray-300 text-gray-700";
-  }
-};
+      default:
+        return "bg-gray-50 border-gray-300 text-[#7faaca]";
+    }
+  };
 
+  const getTrendIcon = (trend) => {
+    switch (trend) {
+      case "improved":
+        return <FaChartLine className="text-green-600" />;
 
-const getTrendIcon = (trend) => {
-  switch (trend) {
-    case "improved":
-      return <FaChartLine className="text-green-600" />;
+      case "increased":
+        return <MdTrendingUp className="text-yellow-600" />;
 
-    case "increased":
-      return <MdTrendingUp className="text-yellow-600" />;
+      case "worsened":
+      case "decreased":
+        return <BsGraphDownArrow className="text-red-600" />;
 
-    case "worsened":
-    case "decreased":
-      return <BsGraphDownArrow className="text-red-600" />;
+      case "stable":
+        return <MdTrendingFlat className="text-blue-600" />;
 
-    case "stable":
-      return <MdTrendingFlat className="text-blue-600" />;
-
-    default:
-      return <MdTrendingFlat />;
-  }
-};
+      default:
+        return <MdTrendingFlat />;
+    }
+  };
 
   const getReportIcon = (type) => {
     switch (type) {
@@ -309,7 +307,7 @@ const getTrendIcon = (trend) => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center max-w-md">
           <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-[#156669] mb-2">
             No Previous Report Found
           </h2>
           <p className="text-gray-600 mb-6">
@@ -333,13 +331,13 @@ const getTrendIcon = (trend) => {
         <div className="mb-6">
           <button
             onClick={() => navigate(`/report/${reportId}`)}
-            className="text-teal-600 hover:text-teal-700 mb-4 flex items-center gap-2 text-sm font-medium"
+            className="text-[#7faaca] hover:text-teal-700 mb-4 flex items-center gap-2 text-sm font-medium"
           >
             ← Back to Report
           </button>
 
-          <Card className="border-l-4 border-teal-500">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+          <Card className="border-l-4 border-[#7faaca] bg-white">
+            <h1 className="text-2xl font-bold text-[#156669] mb-4 flex items-center gap-3">
               <span>
                 <VscGraph />
               </span>{" "}
@@ -354,7 +352,7 @@ const getTrendIcon = (trend) => {
                   <span className="text-xl">
                     {getReportIcon(comparisonData.previous_report?.type)}
                   </span>
-                  <h3 className="font-bold text-gray-800">Previous Report</h3>
+                  <h3 className="font-bold text-[#156669]">Previous Report</h3>
                 </div>
                 <p className="text-sm text-gray-600 mb-1">
                   {comparisonData.previous_report?.name}
@@ -370,7 +368,7 @@ const getTrendIcon = (trend) => {
                   <span className="text-xl">
                     {getReportIcon(comparisonData.current_report?.type)}
                   </span>
-                  <h3 className="font-bold text-gray-800">Current Report</h3>
+                  <h3 className="font-bold text-[#156669]">Current Report</h3>
                 </div>
                 <p className="text-sm text-gray-600 mb-1">
                   {comparisonData.current_report?.name}
@@ -395,15 +393,15 @@ const getTrendIcon = (trend) => {
         </div>
 
         {/* AI Summary */}
-        <Card className="mb-6 border-t-4 border-teal-500">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <Card className="mb-6 border-t-4 border-[#7faaca] bg-[#bad2e4]">
+          <h2 className="text-lg font-bold text-[#156669] mb-4 flex items-center gap-2">
             <span className="flex gap-2">
               <FaMicroscope />
             </span>{" "}
             Clinical Comparison Analysis
           </h2>
-          <div className="bg-teal-50 rounded-lg p-5 border-2 border-teal-200">
-            <p className="text-gray-700 leading-relaxed">
+          <div className="bg-teal-50 rounded-lg p-5 border-2  border-teal-200">
+            <p className="text-gray-900 leading-relaxed">
               {comparisonData.comparison?.summary}
             </p>
           </div>
@@ -418,7 +416,7 @@ const getTrendIcon = (trend) => {
 
         {/* Metrics Comparison */}
         <Card>
-          <h2 className="text-lg font-bold text-gray-900 mb-6">
+          <h2 className="text-lg font-bold text-[#156669] mb-6">
             Parameter Changes
           </h2>
 
@@ -497,13 +495,13 @@ const getTrendIcon = (trend) => {
         <div className="mt-6 flex gap-4">
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+            className="flex-1 bg-gray-200 text-[#7faaca] py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
           >
             Back to Dashboard
           </button>
           <button
             onClick={() => navigate(`/report/${reportId}`)}
-            className="flex-1 bg-teal-400 text-white py-3 rounded-lg font-semibold hover:bg-teal-600 transition shadow-md"
+            className="flex-1 bg-[#7faaca] text-white py-3 rounded-lg font-semibold hover:bg-[#7faaca] transition shadow-md"
           >
             View Current Report
           </button>

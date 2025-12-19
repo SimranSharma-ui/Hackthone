@@ -3,7 +3,7 @@ import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 const LineChart = ({ data, dataKey, xAxisKey = 'date', color = "#0d9488", title, unit }) => {
   return (
     <div className="w-full">
-      {title && <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>}
+      {title && <h3 className="text-lg font-semibold text-[#156669] mb-4">{title}</h3>}
       <ResponsiveContainer width="100%" height={300}>
         <RechartsLineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />

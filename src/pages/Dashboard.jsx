@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getAllReports } from "../services/api";
+import { deleteReport, getAllReports } from "../services/api";
 import StatCard from "../Utils/StatCard";
 import Card from "../Utils/Card";
 import Loader from "../Utils/Loader";
@@ -19,6 +19,8 @@ import {
   FaExclamationTriangle,
   FaChartBar,
 } from "react-icons/fa";
+import { FaDeleteLeft } from "react-icons/fa6";
+import { MdDelete } from "react-icons/md";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -45,7 +47,6 @@ const Dashboard = () => {
       // toast.info(
       //   "Showing sample reports. Connect to backend for your actual data."
       // );
-
       // setReports([
       //   {
       //     id: 1,
@@ -137,12 +138,35 @@ const Dashboard = () => {
     });
   };
 
+  const formatLabel = (value = "") => {
+    if (!value) return "";
+
+    return value
+      .toString()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
+  const handleDelete = async (reportId) => {
+    const previousReports = reports;
+
+    setReports((prev) => prev.filter((r) => r.id !== reportId));
+
+    try {
+      await deleteReport(reportId);
+      toast.success("Report deleted successfully");
+    } catch (err) {
+      setReports(previousReports);
+      toast.error("Failed to delete report");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Welcome Section */}
-        <div className="mb-8 bg-white rounded-xl p-6 border-l-4 border-teal-500 shadow-sm">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <div className="mb-8 bg-white rounded-xl p-6 border-l-4 border-[#7faaca] shadow-sm">
+          <h1 className="text-3xl font-bold text-[#156669] mb-2">
             Hello, {user?.data?.first_name || "Aanmaya Sharma"}{" "}
             {user?.data?.last_name || ""}
           </h1>
@@ -152,7 +176,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 hidden lg:grid-cols-4 gap-5 mb-8">
           {stats.map((stat, index) => (
             <StatCard
               key={index}
@@ -169,7 +193,7 @@ const Dashboard = () => {
           <Card
             hover
             onClick={() => navigate("/upload")}
-            className="bg-teal-400 text-white border-2 border-teal-600"
+            className="bg-[#7faaca] text-white border-2 border-teal-600"
           >
             <div className="w-12 h-12 bg-white text-black bg-opacity-20 rounded-lg flex items-center justify-center text-2xl mb-3">
               <FaUpload />
@@ -210,9 +234,9 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Reports */}
-        <Card className="border-t-4 border-teal-500">
-          <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <FaClipboardList className="text-2xl text-teal-600" /> Recent
+        <Card className="border-t-4 border-[#7faaca]">
+          <h2 className="text-xl font-bold text-[#156669] mb-6 flex items-center gap-2">
+            <FaClipboardList className="text-2xl text-[#7faaca]" /> Recent
             Medical Reports
           </h2>
 
@@ -223,7 +247,7 @@ const Dashboard = () => {
           ) : reports.length === 0 ? (
             <div className="text-center py-12">
               <FaFileAlt className="text-6xl text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
+              <h3 className="text-xl font-bold text-[#156669] mb-2">
                 No Reports Yet
               </h3>
               <p className="text-gray-600 mb-6">
@@ -231,7 +255,7 @@ const Dashboard = () => {
               </p>
               <button
                 onClick={() => navigate("/upload")}
-                className="bg-teal-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-600 shadow-md flex items-center gap-2 mx-auto"
+                className="bg-[#7faaca] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#7faaca] shadow-md flex items-center gap-2 mx-auto"
               >
                 <FaUpload /> Upload First Report
               </button>
@@ -242,28 +266,30 @@ const Dashboard = () => {
                 <div
                   key={report.id}
                   onClick={() => navigate(`/report/${report.id}`)}
-                  className="border-2 border-gray-200 rounded-lg p-4 hover:border-teal-400 hover:bg-teal-50 transition-all cursor-pointer"
+                  className="border-2 border-gray-200 rounded-lg p-4 hover:border-[#7faaca] hover:bg-teal-50 transition-all cursor-pointer"
                 >
                   <div className="flex items-start justify-between">
+                    {/* Left content */}
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-xl">
                           {getReportIcon(report.report_type || report.type)}
                         </span>
-                        <h3 className="text-base font-semibold text-gray-900">
-                          {report.report_type || report.name}
+                        <h3 className="text-base font-semibold text-[#156669]">
+                          {formatLabel(report.report_type || report.name)}
                         </h3>
                         <span className="px-2 py-1 bg-green-100 text-green-700 rounded-md text-xs font-medium">
                           {report.status}
                         </span>
                       </div>
+
                       <p className="text-gray-600 text-sm mb-2 ml-8 whitespace-pre-line">
                         {report.ai_summary || report.summary}
                       </p>
 
                       <div className="flex items-center gap-4 text-xs text-gray-500 ml-8">
                         <span className="flex items-center gap-1">
-                          <FaClipboardList />{" "}
+                          <FaClipboardList />
                           {getReportTypeName(report.report_type || report.type)}
                         </span>
                         <span className="flex items-center gap-1 text-sm text-gray-600">
@@ -272,9 +298,23 @@ const Dashboard = () => {
                         </span>
                       </div>
                     </div>
-                    <button className="text-teal-500 hover:text-teal-600 text-lg ml-4 font-bold flex items-center gap-2">
-                      View <FaArrowRight />
-                    </button>
+
+                    {/* Right actions */}
+                    <div className="flex flex-col items-end ml-4 h-full">
+                      <button className="text-teal-500 hover:text-[#7faaca] text-lg font-bold flex items-center gap-2">
+                        View <FaArrowRight />
+                      </button>
+
+                      <button
+                        className="mt-auto text-red-500 cursor-pointer hover:text-red-600 text-4xl font-medium"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(report.id);
+                        }}
+                      >
+                       <MdDelete />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

@@ -79,18 +79,11 @@ const ReportDetails = () => {
       return;
     }
 
-    // Ensure full URL if backend URL is relative
     const fileUrl = report.file_url.startsWith("http")
       ? report.file_url
       : `https://api-medilens.thesynergyworks.com/api${report.file_url}`;
 
-    console.log("Downloading file from URL:", fileUrl);
-    const link = document.createElement("a");
-    link.href = fileUrl;
-    link.download = report.name + ".pdf"; // optional: custom filename
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
   };
 
   const getMockReport = (reportId) => {
@@ -220,7 +213,7 @@ const ReportDetails = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">❌</div>
-          <p className="text-xl text-gray-800 mb-4">Report not found</p>
+          <p className="text-xl text-[#156669] mb-4">Report not found</p>
           <button
             onClick={() => navigate("/dashboard")}
             className="bg-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600"
@@ -233,23 +226,23 @@ const ReportDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <button
             onClick={() => navigate("/dashboard")}
-            className="text-teal-600 hover:text-teal-700 mb-4 flex items-center gap-2 text-sm font-medium"
+            className="text-[#7faaca] hover:text-[#7faac8] mb-4 flex items-center gap-2 text-sm font-medium"
           >
             ← Back to Dashboard
           </button>
 
-          <Card className="border-l-4 border-teal-500 bg-white">
+          <Card className="border-l-4 border-[#7faac8] bg-white">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-4xl">{getReportIcon(report.type)}</span>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-bold text-[#156669]">
                     {report.report_type?.toUpperCase()} Report
                   </h1>
                 </div>
@@ -273,7 +266,7 @@ const ReportDetails = () => {
                 </div>
               </div>
               <div className="flex gap-3">
-                {allReports > 1 && (
+                {report.has_previous_report && (
                   <button
                     onClick={() => navigate(`/report/${id}/compare`)}
                     className="bg-blue-500 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-600 flex items-center gap-2 shadow-md"
@@ -283,7 +276,7 @@ const ReportDetails = () => {
                 )}
                 <button
                   onClick={handleDownload}
-                  className="bg-teal-400 flex gap-2 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-teal-600 shadow-md"
+                  className="bg-[#7faaca] flex gap-2 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-[#7faaca] shadow-md"
                 >
                   <FaUpload /> Download
                 </button>
@@ -299,8 +292,8 @@ const ReportDetails = () => {
               onClick={() => setActiveTab("explanation")}
               className={`flex-1 py-4 px-6 font-semibold transition-colors ${
                 activeTab === "explanation"
-                  ? "text-teal-600 border-b-2 border-teal-600"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-[#7faaca] border-b-2 border-teal-600"
+                  : "text-gray-500 hover:text-[#7faaca]"
               }`}
             >
               AI Explanation
@@ -309,8 +302,8 @@ const ReportDetails = () => {
               onClick={() => setActiveTab("details")}
               className={`flex-1 py-4 px-6 font-semibold transition-colors ${
                 activeTab === "details"
-                  ? "text-teal-600 border-b-2 border-teal-600"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-[#7faaca] border-b-2 border-teal-600"
+                  : "text-gray-500 hover:text-[#7faaca]"
               }`}
             >
               Detailed Results
@@ -322,13 +315,13 @@ const ReportDetails = () => {
             {activeTab === "explanation" && (
               <div className="space-y-6">
                 <div className="bg-teal-50 rounded-lg p-6 border-2 border-teal-200">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-[#156669] mb-3 flex items-center gap-2">
                     <span className="flex gap-2">
                       <FaMicroscope />
                     </span>{" "}
                     Clinical AI Analysis
                   </h3>
-                  {/* <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                  {/* <p className="text-[#7faaca] leading-relaxed whitespace-pre-line">
                     {report.ai_explanation}
                   </p> */}
                   <div className="space-y-4">
@@ -369,8 +362,8 @@ const ReportDetails = () => {
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 flex gap-2 mb-4">
+                {/* <div>
+                  <h3 className="text-lg font-bold text-[#156669] flex gap-2 mb-4">
                     <FaClipboardList /> Key Findings
                   </h3>
                   <div className="space-y-4 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -388,10 +381,10 @@ const ReportDetails = () => {
                       />
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                  <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-[#156669] mb-5 flex items-center gap-2">
                     <MdTipsAndUpdates className="text-green-600 text-xl" />
                     Recommendations
                   </h3>
@@ -408,7 +401,7 @@ const ReportDetails = () => {
                       >
                         {/* Header */}
                         <div className="flex items-start justify-between mb-3">
-                          <h4 className="font-bold text-gray-900 text-base">
+                          <h4 className="font-bold text-[#156669] text-base">
                             {rec.title}
                           </h4>
 
@@ -424,17 +417,17 @@ const ReportDetails = () => {
                         </div>
 
                         {/* Message */}
-                        <p className="text-sm text-gray-700 mb-4">
+                        <p className="text-sm text-[#7faaca] mb-4">
                           {rec.message}
                         </p>
 
                         {/* Actions */}
                         {rec.actions?.length > 0 && (
                           <div className="mb-4">
-                            <p className="text-sm font-semibold text-gray-800 mb-2">
+                            <p className="text-sm font-semibold text-[#156669] mb-2">
                               What you should do
                             </p>
-                            <ul className="space-y-1 text-sm text-gray-700">
+                            <ul className="space-y-1 text-sm text-[#7faaca]">
                               {rec.actions.map((action, i) => (
                                 <li key={i} className="flex gap-2">
                                   <span className="text-green-600 font-bold">
@@ -497,19 +490,19 @@ const ReportDetails = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b-2 border-gray-200">
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">
+                      <th className="text-left py-3 px-4 font-bold text-[#7faaca]">
                         Parameter
                       </th>
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">
+                      <th className="text-left py-3 px-4 font-bold text-[#7faaca]">
                         Your Value
                       </th>
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">
+                      <th className="text-left py-3 px-4 font-bold text-[#7faaca]">
                         Normal Range
                       </th>
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">
+                      <th className="text-left py-3 px-4 font-bold text-[#7faaca]">
                         Status
                       </th>
-                      <th className="text-left py-3 px-4 font-bold text-gray-700">
+                      <th className="text-left py-3 px-4 font-bold text-[#7faaca]">
                         Trend
                       </th>
                     </tr>
@@ -566,7 +559,7 @@ const ReportDetails = () => {
           <Card
             hover
             onClick={() => navigate("/trends")}
-            className="bg-teal-400 text-white border-2 border-teal-600"
+            className="bg-[#7faaca] text-white border-2 border-teal-600"
           >
             <div className="w-12 h-12 bg-white text-black bg-opacity-20 rounded-lg flex items-center justify-center text-2xl mb-2">
               {" "}

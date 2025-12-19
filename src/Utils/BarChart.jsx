@@ -5,7 +5,7 @@ const BarChart = ({ data, dataKey, xAxisKey = 'name', title, unit, colors }) => 
 
   return (
     <div className="w-full">
-      {title && <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>}
+      {title && <h3 className="text-lg font-semibold text-[#156669] mb-4">{title}</h3>}
       <ResponsiveContainer width="100%" height={300}>
         <RechartsBarChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
