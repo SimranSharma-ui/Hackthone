@@ -165,9 +165,9 @@ const CompareReports = () => {
     } catch (err) {
       console.error("Comparison error:", err);
       setError(err.message);
-      toast.info(
-        "Using sample comparison data. Connect to backend for real comparison."
-      );
+      // toast.info(
+      //   "Using sample comparison data. Connect to backend for real comparison."
+      // );
       // Always show mock data for development/demo
       setComparisonData(getMockComparison());
     } finally {

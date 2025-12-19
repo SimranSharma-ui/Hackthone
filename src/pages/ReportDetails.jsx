@@ -65,7 +65,7 @@ const ReportDetails = () => {
       setError(null);
     } catch (err) {
       setError(err.message);
-      toast.info("Using sample data. Connect to backend for real report.");
+      // toast.info("Using sample data. Connect to backend for real report.");
       // Mock data fallback
       setReport(getMockReport(id));
     } finally {

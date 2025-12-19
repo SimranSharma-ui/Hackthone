@@ -77,7 +77,7 @@ const TrendsAnalysis = () => {
       // Process and set trends data as needed
     } catch (err) {
       setError(err.message);
-      toast.info("Using sample trends data");
+      // toast.info("Using sample trends data");
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,6 @@ const TrendsAnalysis = () => {
 
       const response = await getHealthTrends(selectedMetric, 6);
 
-      // ✅ normalize backend response
       const normalizedData = {
         metric_name: response.message.metric_name,
         unit: response.message.data_points[0]?.unit,
@@ -120,7 +119,7 @@ const TrendsAnalysis = () => {
       setTrendsData(normalizedData);
     } catch (err) {
       setError(err.message);
-      toast.info("Using sample trends data");
+      // toast.info("Using sample trends data");
       setTrendsData(getMockTrendsData());
     } finally {
       setLoading(false);

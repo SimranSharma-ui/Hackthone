@@ -57,7 +57,7 @@ const UploadReport = () => {
 
     try {
       const result = await uploadReport(uploadedFile, reportType);
-      toast.success("Report uploaded successfully! Analyzing... 🔍");
+      toast.success("Report uploaded successfully! Analyzing... ");
 
 
       const resultId = result?.message?.report.id || result.report?.id || 1;
